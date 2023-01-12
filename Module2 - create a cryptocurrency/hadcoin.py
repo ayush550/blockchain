@@ -119,7 +119,7 @@ def mine_block():
                 'index' : block['index'],
                 'timestamp' : block['timestamp'],
                 'proof' : block['proof'],
-                'previous_hash' : block['previous_hash']
+                'previous_hash' : block['previous_hash'],
                 'transactions' : block['transactions']}
     return jsonify(response), 200
 
@@ -141,6 +141,15 @@ def is_valid():
     return jsonify(response), 200
 
 # Adding a new transaction to the Blockchain
+@app.route('/add_transaction', methods=['POST'])
+def add_transactions():
+    json = request.get_json()
+    transaction_keys = ['sender', 'receiver', 'amount']
+    if not all (key in json for key in transaction_keys):
+        return 'Some elements of the transaction are missing', 400
+    index = blockchain.add_transaction(json['sender'], json['receiver'], json['amount'])
+    response = {'message' : f'This transaction will be added to Block {index}'}
+    return jsonify(response), 201
 
 # Part 3 - Decentralising our Blockchain
 
